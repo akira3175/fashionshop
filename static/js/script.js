@@ -4,18 +4,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const productName = document.getElementById("productname");
     const productPrice = document.getElementById("productprice");
     const productImage = document.getElementById("imgbig");
-            console.log("222")
 
-     Open modal when product clicked
+    //  Open modal when product clicked
     document.querySelectorAll(".product__item").forEach(item => {
         item.addEventListener("click", function() {
-            console.log("111")
 
             const name = this.querySelector(".product__name").innerText;
             const price = this.querySelector(".product__price").innerText;
             const imgSrc = this.querySelector(".product__img").getAttribute("src");
             const id = item.getAttribute("id")
-            console.log(id)
 
             productName.innerText = name;
             productPrice.innerText = price;

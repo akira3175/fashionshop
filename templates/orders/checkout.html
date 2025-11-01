@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 {% load static %}
 
@@ -7,141 +8,145 @@
 <style>
     .checkout-container {
         max-width: 1200px;
-        margin: 40px auto;
-        padding: 0 20px;
+        margin: 50px auto;
+        padding: 20px;
     }
     
     .checkout-title {
         font-size: 28px;
-        font-weight: 500;
         margin-bottom: 30px;
-        color: #000;
+        text-align: center;
     }
     
     .checkout-content {
         display: grid;
-        grid-template-columns: 1fr 380px;
+        grid-template-columns: 1fr 400px;
         gap: 30px;
     }
     
     .checkout-form {
         background: #fff;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
         padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     
     .form-section {
         margin-bottom: 30px;
     }
     
-    .form-section:last-child {
-        margin-bottom: 0;
-    }
-    
-    .form-section-title {
-        font-size: 18px;
-        font-weight: 500;
+    .form-section h3 {
+        font-size: 20px;
         margin-bottom: 20px;
-        color: #000;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #000;
     }
     
     .form-group {
-        margin-bottom: 16px;
+        margin-bottom: 20px;
     }
     
     .form-group label {
         display: block;
-        font-size: 14px;
+        margin-bottom: 8px;
         font-weight: 500;
-        margin-bottom: 6px;
-        color: #333;
     }
     
     .form-group input,
     .form-group textarea {
         width: 100%;
-        padding: 10px 12px;
-        font-size: 14px;
-        border: 1px solid #e0e0e0;
+        padding: 12px;
+        border: 1px solid #ddd;
         border-radius: 4px;
-        font-family: inherit;
-    }
-    
-    .form-group input:focus,
-    .form-group textarea:focus {
-        outline: none;
-        border-color: #000;
+        font-size: 14px;
     }
     
     .form-group textarea {
-        resize: vertical;
         min-height: 100px;
+        resize: vertical;
     }
     
-    .checkout-summary {
+    .order-summary {
         background: #fff;
-        border: 1px solid #e0e0e0;
+        padding: 30px;
         border-radius: 8px;
-        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         height: fit-content;
         position: sticky;
         top: 100px;
     }
     
-    .summary-title {
-        font-size: 18px;
-        font-weight: 500;
+    .order-summary h3 {
+        font-size: 20px;
         margin-bottom: 20px;
-        color: #000;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #000;
     }
     
-    .summary-item {
-        padding: 12px 0;
-        border-bottom: 1px solid #f0f0f0;
-        font-size: 14px;
-        color: #666;
+    .order-item {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
     }
     
-    .summary-item:last-of-type {
+    .order-item:last-child {
         border-bottom: none;
     }
     
-    .summary-item-name {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 4px;
+    .order-item-image {
+        width: 60px;
+        height: 60px;
+        flex-shrink: 0;
     }
     
-    .summary-item-qty {
+    .order-item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+    
+    .order-item-info {
+        flex: 1;
+    }
+    
+    .order-item-info h4 {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    
+    .order-item-info p {
         font-size: 12px;
-        color: #999;
+        color: #666;
+        margin-bottom: 3px;
     }
     
-    .summary-total {
-        border-top: 1px solid #e0e0e0;
-        padding-top: 12px;
-        margin-top: 12px;
+    .summary-row {
         display: flex;
         justify-content: space-between;
-        font-weight: 500;
-        color: #000;
-        font-size: 16px;
+        margin-bottom: 15px;
+        font-size: 14px;
     }
     
-    .summary-total span:last-child {
-        color: #d32f2f;
+    .summary-row.total {
+        font-size: 18px;
+        font-weight: bold;
+        padding-top: 15px;
+        border-top: 2px solid #000;
+        margin-top: 20px;
     }
     
     .place-order-btn {
         width: 100%;
-        padding: 12px;
+        padding: 15px;
         background: #000;
         color: #fff;
         border: none;
         border-radius: 4px;
-        font-size: 14px;
-        font-weight: 500;
+        font-size: 16px;
+        font-weight: 600;
         cursor: pointer;
         margin-top: 20px;
     }
@@ -155,41 +160,13 @@
         cursor: not-allowed;
     }
     
-    .back-to-cart {
-        text-align: center;
-        margin-top: 15px;
-    }
-    
-    .back-to-cart a {
-        color: #0066cc;
-        text-decoration: none;
-        font-size: 14px;
-    }
-    
-    .back-to-cart a:hover {
-        text-decoration: underline;
-    }
-    
-    .error-message {
-        background: #ffebee;
-        color: #c62828;
-        padding: 12px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-        font-size: 14px;
-    }
-    
     @media (max-width: 768px) {
         .checkout-content {
             grid-template-columns: 1fr;
         }
         
-        .checkout-summary {
+        .order-summary {
             position: static;
-        }
-        
-        .checkout-form {
-            padding: 20px;
         }
     }
 </style>
@@ -199,119 +176,156 @@
 <div class="checkout-container">
     <h1 class="checkout-title">Thanh toán</h1>
     
-    {% if messages %}
-        {% for message in messages %}
-            <div class="error-message">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-    
     <div class="checkout-content">
-        <form method="POST" class="checkout-form" id="checkoutForm">
-            {% csrf_token %}
+        <div class="checkout-form">
+            <form id="checkoutForm" method="POST">
+                {% csrf_token %}
+                
+                <div class="form-section">
+                    <h3>Thông tin giao hàng</h3>
+                    
+                    <div class="form-group">
+                        <label for="receiver">Họ và tên người nhận *</label>
+                        <input type="text" id="receiver" name="receiver" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Địa chỉ giao hàng *</label>
+                        <textarea id="address" name="address" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="note">Ghi chú (Tùy chọn)</label>
+                        <textarea id="note" name="note"></textarea>
+                    </div>
+                </div>
+                
+                <input type="hidden" id="cartData" name="cart_data">
+                <input type="hidden" id="totalAmount" name="total_amount">
+            </form>
+        </div>
+        
+        <div class="order-summary">
+            <h3>Đơn hàng</h3>
             
-            <div class="form-section">
-                <h3 class="form-section-title">Thông tin giao hàng</h3>
-                
-                <div class="form-group">
-                    <label for="receiver_name">Tên người nhận *</label>
-                    <input type="text" id="receiver_name" name="receiver_name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="receiver_phone">Số điện thoại *</label>
-                    <input type="tel" id="receiver_phone" name="receiver_phone" pattern="[0-9\-\+\s$$$$]+" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="receiver_address">Địa chỉ giao hàng *</label>
-                    <textarea id="receiver_address" name="receiver_address" required></textarea>
-                </div>
+            <div id="orderItems"></div>
+            
+            <div class="summary-row">
+                <span>Tạm tính:</span>
+                <span id="summarySubtotal">0đ</span>
             </div>
             
-            <input type="hidden" id="cart_data" name="cart_data" value="">
+            <div class="summary-row">
+                <span>Phí vận chuyển:</span>
+                <span>Miễn phí</span>
+            </div>
             
-            <button type="submit" class="place-order-btn" id="submitBtn">
+            <div class="summary-row total">
+                <span>Tổng cộng:</span>
+                <span id="summaryTotal">0đ</span>
+            </div>
+            
+            <button type="submit" form="checkoutForm" class="place-order-btn" id="placeOrderBtn">
                 Đặt hàng
             </button>
-            
-            <div class="back-to-cart">
-                <a href="{% url 'cart' %}">Quay lại giỏ hàng</a>
-            </div>
-        </form>
-        
-        <div class="checkout-summary">
-            <h3 class="summary-title">Tóm tắt đơn hàng</h3>
-            <div id="summaryItems"></div>
-            <div class="summary-total">
-                <span>Tổng cộng:</span>
-                <span id="totalPrice">0đ</span>
-            </div>
         </div>
     </div>
 </div>
 
+<script src="{% static 'js/cart.js' %}"></script>
 <script>
-class CartManager {
-    constructor() {
-        this.storageKey = 'fashionshop_cart';
-    }
-    
-    getCart() {
-        const cart = localStorage.getItem(this.storageKey);
-        return cart ? JSON.parse(cart) : [];
-    }
-}
-
-const cart = new CartManager();
-
-function formatPrice(price) {
-    return price.toLocaleString('vi-VN') + 'đ';
-}
-
-function renderSummary() {
-    const cartItems = cart.getCart();
-    const container = document.getElementById('summaryItems');
-    
-    if (cartItems.length === 0) {
-        window.location.href = '{% url "cart" %}';
-        return;
-    }
-    
-    let html = '';
-    let total = 0;
-    
-    cartItems.forEach(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
+    // Render order summary
+    function renderOrderSummary() {
+        const cartItems = cartManager.getCart();
+        const container = document.getElementById('orderItems');
         
-        html += `
-            <div class="summary-item">
-                <div class="summary-item-name">
-                    <span>${item.product_name}</span>
-                    <span>${formatPrice(itemTotal)}</span>
+        if (cartItems.length === 0) {
+            window.location.href = '{% url "orders:cart" %}';
+            return;
+        }
+        
+        let html = '';
+        cartItems.forEach(item => {
+            html += `
+                <div class="order-item">
+                    <div class="order-item-image">
+                        <img src="${item.image}" alt="${item.product_name}">
+                    </div>
+                    <div class="order-item-info">
+                        <h4>${item.product_name}</h4>
+                        <p>Size: ${item.size_name}</p>
+                        <p>Số lượng: ${item.quantity}</p>
+                        <p style="font-weight: 600; color: #000;">${formatPrice(item.price * item.quantity)}</p>
+                    </div>
                 </div>
-                <div class="summary-item-qty">Size ${item.size_name} × ${item.quantity}</div>
-            </div>
-        `;
+            `;
+        });
+        
+        container.innerHTML = html;
+        
+        const total = cartManager.getTotalPrice();
+        document.getElementById('summarySubtotal').textContent = formatPrice(total);
+        document.getElementById('summaryTotal').textContent = formatPrice(total);
+    }
+    
+    // Handle form submission
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const cartItems = cartManager.getCart();
+        if (cartItems.length === 0) {
+            alert('Giỏ hàng trống!');
+            return;
+        }
+        
+        const formData = new FormData(this);
+        
+        // Chuẩn bị data để gửi
+        const checkoutData = {
+            receiver: formData.get('receiver'),
+            phone: formData.get('phone'),
+            address: formData.get('address'),
+            note: formData.get('note'),
+            items: cartManager.prepareCheckoutData(),
+            total_amount: cartManager.getTotalPrice()
+        };
+        
+        // Gửi request lên server
+        fetch('{% url "orders:process_checkout" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(checkoutData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Xóa giỏ hàng
+                cartManager.clearCart();
+                
+                // Thông báo thành công
+                alert('Đặt hàng thành công! Mã đơn hàng: ' + data.order_id);
+                
+                // Redirect về trang đơn hàng hoặc trang chủ
+                window.location.href = '{% url "orders:my_orders" %}';
+            } else {
+                alert('Có lỗi xảy ra: ' + (data.message || 'Vui lòng thử lại'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!');
+        });
     });
     
-    container.innerHTML = html;
-    document.getElementById('totalPrice').textContent = formatPrice(total);
-}
-
-document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const cartData = cart.getCart();
-    if (cartData.length === 0) {
-        alert('Giỏ hàng của bạn trống');
-        return;
-    }
-    
-    document.getElementById('cart_data').value = JSON.stringify(cartData);
-    this.submit();
-});
-
-document.addEventListener('DOMContentLoaded', renderSummary);
+    // Load order summary when page loads
+    document.addEventListener('DOMContentLoaded', renderOrderSummary);
 </script>
 {% endblock %}

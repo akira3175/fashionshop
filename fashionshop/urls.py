@@ -30,7 +30,7 @@ urlpatterns = [
     path('products/', include('products.urls')),
 
     path('', include('core.urls')),
-    path('orders/', include('orders.urls')),
+    path('orders/', include(('orders.urls', 'orders'), namespace='orders')),
     path('dashboard/', include('dashboard.urls')), 
 ]
 

@@ -1,309 +1,202 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Chi tiết đơn hàng #{{ order.id }} - Fashion Shop{% endblock %}
 
 {% block css %}
 <style>
     .order-detail-container {
-        max-width: 1000px;
-        margin: 40px auto;
-        padding: 0 20px;
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 20px;
     }
     
-    .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: #0066cc;
-        text-decoration: none;
-        margin-bottom: 20px;
-        font-size: 14px;
-    }
-    
-    .back-link:hover {
-        text-decoration: underline;
+    .order-detail-card {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 30px;
     }
     
     .order-detail-header {
-        background: #fff;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #000;
     }
     
     .order-detail-title {
         font-size: 24px;
-        font-weight: 500;
-        color: #000;
-        margin-bottom: 8px;
-    }
-    
-    .order-detail-date {
-        color: #999;
-        font-size: 14px;
+        font-weight: bold;
     }
     
     .order-status {
         padding: 8px 16px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: 500;
-        text-transform: uppercase;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
     }
     
-    .status-pending {
-        background: #fff3cd;
-        color: #856404;
+    .info-section {
+        margin-bottom: 30px;
     }
     
-    .status-confirmed {
-        background: #d1ecf1;
-        color: #0c5460;
-    }
-    
-    .status-shipped {
-        background: #cfe2ff;
-        color: #084298;
-    }
-    
-    .status-delivered {
-        background: #d1e7dd;
-        color: #0f5132;
-    }
-    
-    .status-cancelled {
-        background: #f8d7da;
-        color: #842029;
-    }
-    
-    .order-detail-content {
-        display: grid;
-        grid-template-columns: 1fr 350px;
-        gap: 20px;
-    }
-    
-    .order-items {
-        background: #fff;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 20px;
-    }
-    
-    .section-title {
+    .info-section h3 {
         font-size: 18px;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    .info-row {
+        display: flex;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .info-label {
+        width: 200px;
         font-weight: 500;
-        margin-bottom: 20px;
-        color: #000;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #e0e0e0;
+        color: #666;
     }
     
-    .item {
-        display: grid;
-        grid-template-columns: 80px 1fr auto;
+    .info-value {
+        flex: 1;
+    }
+    
+    .items-section {
+        margin-bottom: 30px;
+    }
+    
+    .order-item {
+        display: flex;
         gap: 15px;
-        padding: 15px 0;
-        border-bottom: 1px solid #f0f0f0;
-        align-items: center;
+        padding: 15px;
+        background: #f9f9f9;
+        border-radius: 4px;
+        margin-bottom: 10px;
     }
     
-    .item:last-child {
-        border-bottom: none;
-    }
-    
-    .item-image {
+    .order-item-image {
         width: 80px;
         height: 80px;
-        background: #f5f5f5;
-        border-radius: 4px;
-        overflow: hidden;
     }
     
-    .item-image img {
+    .order-item-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        border-radius: 4px;
     }
     
-    .item-info h4 {
-        font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 6px;
-        color: #000;
+    .order-item-details {
+        flex: 1;
     }
     
-    .item-info p {
-        font-size: 13px;
-        color: #999;
-        margin: 2px 0;
+    .order-item-details h4 {
+        margin-bottom: 5px;
     }
     
-    .item-price {
+    .order-item-price {
         text-align: right;
-        font-weight: 500;
-        color: #000;
+        font-weight: 600;
     }
     
-    .order-info-box {
-        background: #fff;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 20px;
-        height: fit-content;
-        position: sticky;
-        top: 100px;
+    .total-section {
+        text-align: right;
+        font-size: 20px;
+        font-weight: bold;
+        padding-top: 20px;
+        border-top: 2px solid #000;
     }
     
-    .info-group {
-        margin-bottom: 20px;
+    .btn-back {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #000;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
     }
     
-    .info-group:last-child {
-        margin-bottom: 0;
-    }
-    
-    .info-group-title {
-        font-size: 13px;
-        font-weight: 500;
-        text-transform: uppercase;
-        color: #999;
-        margin-bottom: 10px;
-    }
-    
-    .info-item {
-        font-size: 14px;
-        color: #333;
-        margin-bottom: 8px;
-        line-height: 1.5;
-    }
-    
-    .info-item label {
-        font-weight: 500;
-        color: #666;
-    }
-    
-    .order-total-section {
-        border-top: 1px solid #e0e0e0;
-        padding-top: 15px;
-        margin-top: 15px;
-    }
-    
-    .total-row {
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
-        margin-bottom: 10px;
-        color: #666;
-    }
-    
-    .total-row.final {
-        font-size: 16px;
-        font-weight: 500;
-        color: #000;
-    }
-    
-    .total-row.final span:last-child {
-        color: #d32f2f;
-    }
-    
-    @media (max-width: 768px) {
-        .order-detail-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 15px;
-        }
-        
-        .order-detail-content {
-            grid-template-columns: 1fr;
-        }
-        
-        .order-info-box {
-            position: static;
-        }
-        
-        .item {
-            grid-template-columns: 70px 1fr;
-        }
-        
-        .item-image {
-            width: 70px;
-            height: 70px;
-        }
-        
-        .item-price {
-            grid-column: 1 / -1;
-            text-align: left;
-        }
+    .btn-back:hover {
+        background: #333;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="order-detail-container">
-    <a href="{% url 'my_orders' %}" class="back-link">← Quay lại</a>
-    
-    <div class="order-detail-header">
-        <div>
+    <div class="order-detail-card">
+        <div class="order-detail-header">
             <h1 class="order-detail-title">Đơn hàng #{{ order.id }}</h1>
-            <p class="order-detail-date">{{ order.created_at|date:"d/m/Y H:i" }}</p>
+            <span class="order-status status-{{ order.status }}">
+                {{ order.get_status_display }}
+            </span>
         </div>
-        <span class="order-status status-{{ order.status }}">
-            {{ order.get_status_display }}
-        </span>
-    </div>
-    
-    <div class="order-detail-content">
-        <div class="order-items">
-            <h3 class="section-title">Sản phẩm</h3>
-            
-            {% for item in order.items.all %}
-                <div class="item">
-                    <div class="item-image">
-                        {% if item.product_size.product.image %}
-                            <img src="{{ item.product_size.product.image.url }}" alt="{{ item.product_size.product.name }}">
-                        {% else %}
-                            <img src="/placeholder.svg?height=80&width=80" alt="Product">
-                        {% endif %}
-                    </div>
-                    <div class="item-info">
-                        <h4>{{ item.product_size.product.name }}</h4>
-                        <p>Size: {{ item.product_size.size.name }}</p>
-                        <p>Số lượng: {{ item.quantity }}</p>
-                    </div>
-                    <div class="item-price">
-                        {{ item.formatted_price }}
-                    </div>
+        
+        <div class="info-section">
+            <h3>Thông tin đơn hàng</h3>
+            <div class="info-row">
+                <div class="info-label">Ngày đặt:</div>
+                <div class="info-value">{{ order.created_at|date:"d/m/Y H:i" }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Trạng thái:</div>
+                <div class="info-value">{{ order.get_status_display }}</div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h3>Thông tin giao hàng</h3>
+            <div class="info-row">
+                <div class="info-label">Người nhận:</div>
+                <div class="info-value">{{ order.receiver }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Số điện thoại:</div>
+                <div class="info-value">{{ order.phone }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Địa chỉ:</div>
+                <div class="info-value">{{ order.address }}</div>
+            </div>
+            {% if order.note %}
+            <div class="info-row">
+                <div class="info-label">Ghi chú:</div>
+                <div class="info-value">{{ order.note }}</div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="items-section">
+            <h3>Sản phẩm</h3>
+            {% for item in order_items %}
+            <div class="order-item">
+                <div class="order-item-image">
+                    <img src="{{ item.product_size.product.image.url }}" 
+                         alt="{{ item.product_size.product.name }}">
                 </div>
+                <div class="order-item-details">
+                    <h4>{{ item.product_size.product.name }}</h4>
+                    <p>Size: {{ item.product_size.size.name }}</p>
+                    <p>Đơn giá: {{ item.price|floatformat:0 }}đ</p>
+                    <p>Số lượng: {{ item.quantity }}</p>
+                </div>
+                <div class="order-item-price">
+                    {{ item.get_total|floatformat:0 }}đ
+                </div>
+            </div>
             {% endfor %}
         </div>
         
-        <div class="order-info-box">
-            <div class="info-group">
-                <p class="info-group-title">Địa chỉ giao hàng</p>
-                <p class="info-item"><label>Người nhận:</label> {{ order.receiver_name }}</p>
-                <p class="info-item"><label>Điện thoại:</label> {{ order.receiver_phone }}</p>
-                <p class="info-item"><label>Địa chỉ:</label> {{ order.receiver_address }}</p>
-            </div>
-            
-            <div class="order-total-section">
-                <div class="total-row">
-                    <span>Tạm tính:</span>
-                    <span>{{ order.formatted_total }}</span>
-                </div>
-                <div class="total-row">
-                    <span>Phí vận chuyển:</span>
-                    <span>Miễn phí</span>
-                </div>
-                <div class="total-row final">
-                    <span>Tổng cộng:</span>
-                    <span>{{ order.formatted_total }}</span>
-                </div>
-            </div>
+        <div class="total-section">
+            Tổng cộng: {{ order.total_amount|floatformat:0 }}đ
         </div>
+        
+        <a href="{% url 'orders:my_orders' %}" class="btn-back">← Quay lại</a>
     </div>
 </div>
 {% endblock %}
