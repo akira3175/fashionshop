@@ -32,8 +32,8 @@ class CartManager {
         
         // Kiểm tra sản phẩm đã tồn tại với cùng size
         const existingItemIndex = cart.findIndex(i => 
-            i.product_id === item.product_id && 
-            i.size_id === item.size_id
+            parseInt(i.product_id) === parseInt(item.product_id) && 
+            String(i.size_id) === String(item.size_id)
         );
         
         if (existingItemIndex !== -1) {
@@ -42,12 +42,12 @@ class CartManager {
         } else {
             // Nếu chưa có, thêm mới
             cart.push({
-                product_id: item.product_id,
-                size_id: item.size_id,
+                product_id: parseInt(item.product_id),
+                size_id: item.size_id, // Có thể là ID hoặc name
                 product_name: item.product_name,
                 size_name: item.size_name,
-                price: item.price,
-                quantity: item.quantity,
+                price: parseFloat(item.price),
+                quantity: parseInt(item.quantity),
                 image: item.image || ''
             });
         }
@@ -60,7 +60,8 @@ class CartManager {
     removeItem(productId, sizeId) {
         let cart = this.getCart();
         cart = cart.filter(item => 
-            !(item.product_id === productId && item.size_id === sizeId)
+            !(parseInt(item.product_id) === parseInt(productId) && 
+              String(item.size_id) === String(sizeId))
         );
         this.saveCart(cart);
     }
@@ -69,8 +70,8 @@ class CartManager {
     updateQuantity(productId, sizeId, quantity) {
         const cart = this.getCart();
         const item = cart.find(i => 
-            i.product_id === productId && 
-            i.size_id === sizeId
+            parseInt(i.product_id) === parseInt(productId) && 
+            String(i.size_id) === String(sizeId)
         );
         
         if (item) {
@@ -89,7 +90,7 @@ class CartManager {
     getTotalPrice() {
         const cart = this.getCart();
         return cart.reduce((total, item) => 
-            total + (item.price * item.quantity), 0
+            total + (parseFloat(item.price) * parseInt(item.quantity)), 0
         );
     }
     
@@ -119,9 +120,9 @@ class CartManager {
     prepareCheckoutData() {
         const cart = this.getCart();
         return cart.map(item => ({
-            product_id: item.product_id,
-            size_id: item.size_id,
-            quantity: item.quantity
+            product_id: parseInt(item.product_id),
+            size_id: item.size_id, // Gửi size_id (có thể là ID hoặc name)
+            quantity: parseInt(item.quantity)
         }));
     }
 }
@@ -129,7 +130,7 @@ class CartManager {
 // Khởi tạo CartManager global
 const cartManager = new CartManager();
 
-// Format giá tiền
+// Format giá tiền theo kiểu Việt Nam
 function formatPrice(price) {
     return new Intl.NumberFormat('vi-VN').format(price) + 'đ';
 }
@@ -157,139 +158,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // ===========================
-// FILE: static/js/script.js (Updated)
-// ===========================
-
-document.addEventListener("DOMContentLoaded", function() {
-    const modal = document.getElementById("productInfo");
-    const closeModal = document.getElementById("closeModal");
-    const productName = document.getElementById("productname");
-    const productPrice = document.getElementById("productprice");
-    const productImage = document.getElementById("imgbig");
-    const quantityInput = document.querySelector(".quantity-input");
-    const decreaseBtn = document.querySelector(".decrease");
-    const increaseBtn = document.querySelector(".increase");
-
-    let currentProductId = null;
-
-    // Open modal when product clicked
-    document.querySelectorAll(".product__item").forEach(item => {
-        item.addEventListener("click", function() {
-            const name = this.querySelector(".product__name").innerText;
-            const price = this.querySelector(".product__price").innerText;
-            const imgSrc = this.querySelector(".product__img").getAttribute("src");
-            const id = this.getAttribute("id");
-
-            currentProductId = id;
-            productName.innerText = name;
-            productPrice.innerText = price;
-            productImage.src = imgSrc;
-
-            // Reset quantity
-            quantityInput.value = 1;
-
-            modal.classList.remove("unactive");
-            modal.classList.add("active");
-            modal.setAttribute("data-id", id);
-        });
-    });
-
-    // Close modal
-    closeModal.addEventListener("click", function() {
-        modal.classList.add("unactive");
-        modal.classList.remove("active");
-    });
-
-    // Close modal when clicking outside
-    modal.addEventListener("click", function(e) {
-        if (e.target === modal) {
-            modal.classList.add("unactive");
-            modal.classList.remove("active");
-        }
-    });
-
-    // Quantity controls
-    decreaseBtn.addEventListener("click", function() {
-        let value = parseInt(quantityInput.value) || 1;
-        if (value > 1) {
-            quantityInput.value = value - 1;
-        }
-    });
-
-    increaseBtn.addEventListener("click", function() {
-        let value = parseInt(quantityInput.value) || 1;
-        quantityInput.value = value + 1;
-    });
-
-    // Validate quantity input
-    quantityInput.addEventListener("input", function() {
-        let value = parseInt(this.value);
-        if (isNaN(value) || value < 1) {
-            this.value = 1;
-        }
-    });
-});
-
-// Add to cart function
-function addToCart() {
-    const modal = document.getElementById("productInfo");
-    const productId = modal.getAttribute("data-id");
-    const productName = document.getElementById("productname").innerText;
-    const priceText = document.getElementById("productprice").innerText;
-    const sizeSelect = document.getElementById("size");
-    const quantityInput = document.querySelector(".quantity-input");
-    const productImage = document.getElementById("imgbig").src;
-
-    // Lấy giá từ text (loại bỏ "Giá:" và "đ")
-    const price = parseFloat(priceText.replace(/[^0-9]/g, ''));
-    const quantity = parseInt(quantityInput.value) || 1;
-    const sizeOption = sizeSelect.options[sizeSelect.selectedIndex];
-    const sizeName = sizeOption.text;
-    const sizeId = sizeOption.value;
-
-    // Kiểm tra size có được chọn không
-    if (!sizeId || sizeOption.disabled) {
-        alert('Vui lòng chọn size!');
-        return;
-    }
-
-    // Tạo object item
-    const item = {
-        product_id: parseInt(productId),
-        size_id: sizeId,
-        product_name: productName,
-        size_name: sizeName,
-        price: price,
-        quantity: quantity,
-        image: productImage
-    };
-
-    // Thêm vào giỏ hàng
-    if (cartManager.addItem(item)) {
-        alert('Đã thêm vào giỏ hàng!');
-        
-        // Đóng modal
-        modal.classList.add("unactive");
-        modal.classList.remove("active");
-        
-        // Reset quantity
-        quantityInput.value = 1;
-    } else {
-        alert('Có lỗi khi thêm vào giỏ hàng!');
-    }
-}
-
-// Check quantity function
-function checkQuantity() {
-    const quantityInput = document.querySelector(".quantity-input");
-    let value = parseInt(quantityInput.value);
-    if (isNaN(value) || value < 1) {
-        quantityInput.value = 1;
-    }
-}
-
-
-// ===========================
 // CART PAGE RENDERING
 // ===========================
 
@@ -312,12 +180,12 @@ function renderCartPage() {
     
     let html = '';
     cartItems.forEach(item => {
-        const itemTotal = item.price * item.quantity;
+        const itemTotal = parseFloat(item.price) * parseInt(item.quantity);
         
         html += `
             <div class="cart-item">
                 <div class="cart-item-image">
-                    <img src="${item.image}" alt="${item.product_name}">
+                    <img src="${item.image || '/static/img/placeholder.png'}" alt="${item.product_name}">
                 </div>
                 <div class="cart-item-info">
                     <h3>${item.product_name}</h3>
@@ -347,12 +215,12 @@ function renderCartPage() {
 function changeCartQuantity(productId, sizeId, change) {
     const cart = cartManager.getCart();
     const item = cart.find(i => 
-        i.product_id === productId && 
-        i.size_id === sizeId
+        parseInt(i.product_id) === parseInt(productId) && 
+        String(i.size_id) === String(sizeId)
     );
     
     if (item) {
-        const newQuantity = item.quantity + change;
+        const newQuantity = parseInt(item.quantity) + change;
         if (newQuantity >= 1) {
             cartManager.updateQuantity(productId, sizeId, newQuantity);
             renderCartPage();
@@ -361,8 +229,11 @@ function changeCartQuantity(productId, sizeId, change) {
 }
 
 function updateCartQuantity(productId, sizeId, quantity) {
-    cartManager.updateQuantity(productId, sizeId, quantity);
-    renderCartPage();
+    const qty = parseInt(quantity);
+    if (qty >= 1) {
+        cartManager.updateQuantity(productId, sizeId, qty);
+        renderCartPage();
+    }
 }
 
 function removeFromCart(productId, sizeId) {
@@ -374,7 +245,7 @@ function removeFromCart(productId, sizeId) {
 
 function updateCartSummary(cartItems) {
     const subtotal = cartItems.reduce((sum, item) => 
-        sum + (item.price * item.quantity), 0
+        sum + (parseFloat(item.price) * parseInt(item.quantity)), 0
     );
     
     const subtotalElement = document.getElementById('subtotal');

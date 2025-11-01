@@ -11,7 +11,6 @@ from dashboard.check_admin import admin_required
 from products.models import Product, Category, Size, ProductSize
 
 
-# Create your views here.
 @admin_required
 def management(request):
     search_user = request.GET.get('search_user', '').strip()
@@ -40,6 +39,7 @@ def management(request):
     }
     return render(request, 'management.html', context)
 
+
 @admin_required
 def create_user(request):
     if request.method == "POST":
@@ -47,7 +47,6 @@ def create_user(request):
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
-        # Kiểm tra dữ liệu
         if password != confirm_password:
             messages.error(request, "Mật khẩu xác nhận không khớp!")
             return redirect("management")
@@ -56,7 +55,6 @@ def create_user(request):
             messages.error(request, "Tên người dùng đã tồn tại!")
             return redirect("management")
 
-        # Tạo user mới
         user = User.objects.create_user(
             username=username,
             password=password,
@@ -69,6 +67,7 @@ def create_user(request):
         return redirect("management")
 
     return render(request, "management.html")
+
 
 @admin_required
 def edit_user(request, user_id):
@@ -99,11 +98,11 @@ def edit_user(request, user_id):
 
     return render(request, 'edit_user.html', {'user': user})
 
+
 @admin_required
 def delete_user(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
-    # Không cho phép xóa tài khoản admin
     if user.is_superuser:
         messages.error(request, "Không thể xóa tài khoản admin!")
         return redirect('management')
@@ -112,19 +111,26 @@ def delete_user(request, user_id):
     messages.success(request, f"Đã xóa người dùng '{user.username}' thành công.")
     return redirect('management')
 
+
 @admin_required
 def add_product(request):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)
-        sizes = request.POST.getlist('sizes[]')  # Lấy danh sách size từ form JS
+        sizes = request.POST.getlist('sizes[]')  # Lấy danh sách size
+        quantities = request.POST.getlist('quantities[]')  # Lấy danh sách quantity
 
         if form.is_valid():
             product = form.save()
 
-            # Thêm các size tương ứng
-            for size_id in sizes:
+            # Thêm các size với quantity tương ứng
+            for i, size_id in enumerate(sizes):
                 if size_id:
-                    ProductSize.objects.create(product_id=product.id, size_id=size_id)
+                    quantity = int(quantities[i]) if i < len(quantities) and quantities[i] else 0
+                    ProductSize.objects.create(
+                        product_id=product.id, 
+                        size_id=size_id,
+                        quantity=quantity
+                    )
 
             messages.success(request, "Thêm sản phẩm thành công!")
             return redirect('management')
@@ -139,6 +145,8 @@ def add_product(request):
     }
     return render(request, 'add_product.html', context)
 
+
+@admin_required
 def edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     sizes = Size.objects.all()
@@ -149,14 +157,23 @@ def edit_product(request, product_id):
             # Lưu các field chính của product
             updated_product = form.save()
 
-            # Lấy danh sách size được chọn từ form (name="sizes[]")
+            # Lấy danh sách size và quantity được chọn từ form
             selected_size_ids = [int(s) for s in request.POST.getlist('sizes[]') if s]
+            quantities = request.POST.getlist('quantities[]')
 
-            # Thay thế toàn bộ quan hệ ProductSize bằng danh sách mới
-            # (xóa các liên kết cũ rồi tạo mới)
+            # Xóa tất cả ProductSize cũ
             ProductSize.objects.filter(product=product).delete()
+            
+            # Tạo ProductSize mới với quantity
             if selected_size_ids:
-                objs = [ProductSize(product=product, size_id=size_id) for size_id in selected_size_ids]
+                objs = []
+                for i, size_id in enumerate(selected_size_ids):
+                    quantity = int(quantities[i]) if i < len(quantities) and quantities[i] else 0
+                    objs.append(ProductSize(
+                        product=product, 
+                        size_id=size_id,
+                        quantity=quantity
+                    ))
                 ProductSize.objects.bulk_create(objs)
 
             messages.success(request, 'Cập nhật sản phẩm thành công!')
@@ -166,16 +183,17 @@ def edit_product(request, product_id):
     else:
         form = ProductForm(instance=product)
 
-    # Lấy id của các size hiện có để hiển thị selected trong template
-    product_size_ids = list(ProductSize.objects.filter(product=product).values_list('size_id', flat=True))
+    # Lấy ProductSize hiện có với quantity
+    product_sizes = ProductSize.objects.filter(product=product).select_related('size')
 
     context = {
         'form': form,
         'sizes': sizes,
         'product': product,
-        'product_size_ids': product_size_ids,
+        'product_sizes': product_sizes,  # Đổi từ product_size_ids
     }
     return render(request, 'edit_product.html', context)
+
 
 def login_view(request):
     """Function-based view để xử lý login"""
@@ -208,22 +226,18 @@ def signup_view(request):
         password = request.POST.get('password')
         password_confirm = request.POST.get('password_confirm')
         
-        # Kiểm tra mật khẩu trùng khớp
         if password != password_confirm:
             messages.error(request, 'Mật khẩu không trùng khớp.')
             return render(request, 'signup.html')
         
-        # Kiểm tra username đã tồn tại
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Tên đăng nhập đã tồn tại.')
             return render(request, 'signup.html')
         
-        # Kiểm tra email đã tồn tại
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Email đã được sử dụng.')
             return render(request, 'signup.html')
         
-        # Tạo user mới
         user = User.objects.create_user(username=username, email=email, password=password)
         login(request, user)
         messages.success(request, 'Đăng ký thành công!')

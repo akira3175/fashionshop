@@ -17,23 +17,30 @@
                 <div id="sizesContainer">
                     <div class="product-size-item" data-index="1"
                          style="border: 1px solid #ddd; padding: 10px; margin-top: 8px;">
-                        <label>Product size #1:</label>
-                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-                            <select name="sizes[]" class="form__control" style="flex: 1;">
-                                <option value="">---------</option>
-                                {% for size in sizes %}
-                                    <option value="{{ size.id }}">{{ size.name }}</option>
-                                {% endfor %}
-                            </select>
-                            <button type="button" class="btn__add btn addSizeRow">+</button>
-                            <button type="button" class="btn__delete btn removeSizeRow">×</button>
+                        <label style="font-weight: bold; margin-bottom: 8px; display: block;">Product size #1:</label>
+                        <div style="display: grid; grid-template-columns: 2fr 1fr auto auto; gap: 8px; align-items: center;">
+                            <div>
+                                <label style="font-size: 12px; color: #666;">Size:</label>
+                                <select name="sizes[]" class="form__control" style="width: 100%;">
+                                    <option value="">---------</option>
+                                    {% for size in sizes %}
+                                        <option value="{{ size.id }}">{{ size.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size: 12px; color: #666;">Quantity:</label>
+                                <input type="number" name="quantities[]" class="form__control" 
+                                       placeholder="Số lượng" min="0" value="0" style="width: 100%;">
+                            </div>
+                            <button type="button" class="btn__add btn addSizeRow" style="margin-top: 18px;">+</button>
+                            <button type="button" class="btn__delete btn removeSizeRow" style="margin-top: 18px;">×</button>
                         </div>
                     </div>
                 </div>
 
                 <div style="margin-top: 10px;">
-                    <a href="#" id="addSizeLink" style="color: green; text-decoration: none;">+ Add another Product
-                        size</a>
+                    <a href="#" id="addSizeLink" style="color: green; text-decoration: none;">+ Add another Product size</a>
                 </div>
             </div>
 
@@ -55,18 +62,27 @@
     <template id="sizeTemplate">
         <div class="product-size-item"
              style="border: 1px solid #ddd; padding: 10px; margin-top: 8px;">
-            <label></label>
-            <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-                <select name="sizes[]" class="form__control" style="flex: 1;">
-                    <option value="">---------</option>
-                    {% for size in sizes %}
-                        <option value="{{ size.id }}">{{ size.name }}</option>
-                    {% endfor %}
-                </select>
-                <button type="button" class="btn__add btn addSizeRow">+</button>
-                <button type="button" class="btn__delete btn removeSizeRow">×</button>
+            <label style="font-weight: bold; margin-bottom: 8px; display: block;"></label>
+            <div style="display: grid; grid-template-columns: 2fr 1fr auto auto; gap: 8px; align-items: center;">
+                <div>
+                    <label style="font-size: 12px; color: #666;">Size:</label>
+                    <select name="sizes[]" class="form__control" style="width: 100%;">
+                        <option value="">---------</option>
+                        {% for size in sizes %}
+                            <option value="{{ size.id }}">{{ size.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: #666;">Quantity:</label>
+                    <input type="number" name="quantities[]" class="form__control" 
+                           placeholder="Số lượng" min="0" value="0" style="width: 100%;">
+                </div>
+                <button type="button" class="btn__add btn addSizeRow" style="margin-top: 18px;">+</button>
+                <button type="button" class="btn__delete btn removeSizeRow" style="margin-top: 18px;">×</button>
             </div>
         </div>
     </template>
+    
     <script src="{% static 'js/admin/product.js' %}"></script>
 {% endblock %}
