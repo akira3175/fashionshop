@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<!--    <class id="main">
+    <main id="main">
         <div class="heading"></div>
         <div class="container content">
             <div class="container__wrap">
@@ -23,18 +23,7 @@
                 </ul>
             </div>
         </div>
-        <div class="form__search__wrap content">
-            <div class="form__search-suggest">
-                <div class="form__search">
-                    <input type="text" name="search__product" id="search__product" class="search__product" style="padding: 15px;"
-                        placeholder="Search">
-                    <button class="btn__search btn">Search</button>
-                </div>
-                <ul class="suggest-product-list">
-                    </ul>
-            </div>
-        </div>
-         <div class="list__product content">
+        <div class="list__product content">
             <ul class="list__product__container">
             </ul>
         </div>
@@ -150,4 +139,29 @@
         </script>
     {% endif %}
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCart(){try{return JSON.parse(localStorage.getItem('cart')||'[]')}catch(e){return []}}
+function saveCart(c){localStorage.setItem('cart', JSON.stringify(c));}
+document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.add-to-cart-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            const pid = btn.dataset.productId;
+            const name = btn.dataset.name;
+            const price = parseFloat(btn.dataset.price)||0;
+            const psid = pid;
+            const cart = getCart();
+            const idx = cart.findIndex(it=>String(it.product_size_id)===String(psid));
+            if (idx>=0) { cart[idx].quantity = (parseInt(cart[idx].quantity)||0)+1; }
+            else { cart.push({product_size_id: psid, name: name, price: price, size_name: '-', quantity: 1}); }
+            saveCart(cart);
+            const q = cart.reduce((s,it)=>s+(parseInt(it.quantity)||0),0);
+            document.querySelectorAll('.cart-quantity-text').forEach(el=>el.textContent=q);
+            alert('Added to cart');
+        });
+    });
+});
+</script>
 {% endblock %}

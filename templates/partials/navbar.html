@@ -19,6 +19,9 @@
                     <li class="nav__item">
                         <a href="{% url 'management' %}" class="nav__item__link" id="admin">Management</a>
                     </li>
+                    <li class="nav__item">
+                        <a href="{% url 'cart:cart_page' %}" class="nav__item__link">Cart</a>
+                    </li>
                 </ul>
             </nav>
 
@@ -45,7 +48,7 @@
                     <span class="user__name"></span>
                     <img src="{% static 'img/user-Img.png' %}" alt="User" class="user__img">
 
-                    <a href="">
+                    <a href="{% url 'cart:cart_page' %}">
                         <div class="cart-quantity"><span class="cart-quantity-text"></span></div>
                         <img src="{% static 'img/img__cart.png' %}" alt="Cart" class="cart__img">
                     </a>            
