@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Đăng Nhập - Fashion Shop{% endblock %}
+{% block title %}Đăng Ký - Fashion Shop{% endblock %}
 
 {% block content %}
 <div class="auth-container">
     <div class="auth-box">
-        <h1>Đăng Nhập</h1>
+        <h1>Đăng Ký</h1>
         
         {% if messages %}
             <div class="messages">
@@ -27,15 +27,25 @@
             </div>
             
             <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
                 <label for="password">Mật khẩu:</label>
                 <input type="password" id="password" name="password" required>
             </div>
             
-            <button type="submit" class="btn btn-primary">Đăng Nhập</button>
+            <div class="form-group">
+                <label for="password_confirm">Xác nhận mật khẩu:</label>
+                <input type="password" id="password_confirm" name="password_confirm" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Đăng Ký</button>
         </form>
         
         <p class="auth-link">
-            Chưa có tài khoản? <a href="{% url 'signup' %}">Đăng ký ngay</a>
+            Đã có tài khoản? <a href="{% url 'login' %}">Đăng nhập ngay</a>
         </p>
     </div>
 </div>

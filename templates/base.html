@@ -22,13 +22,16 @@
     <!-- header / footer -->
     <link rel="stylesheet" href="{% static 'css/header.css' %}">
     <link rel="stylesheet" href="{% static 'css/footer.css' %}">
-    <!-- page riêng -->
-    {% block css %}{% endblock %}
 
     <!-- responsive -->
     <link rel="stylesheet" href="{% static 'css/footerResponsive.css' %}">
     <link rel="stylesheet" href="{% static 'css/headerResponsive.css' %}">
     <link rel="stylesheet" href="{% static 'css/homeResponsive.css' %}">
+
+    <!-- page riêng -->
+    {% block css %}{% endblock %}
+
+
 </head>
 
 <body>
