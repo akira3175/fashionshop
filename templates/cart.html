@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cart - FashionShop{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content cart-page">
+  <h2>Cart</h2>
+
+  <style>
+    /* nhỏ gọn: layout 2 cột cho trang Cart */
+    .cart-grid { display: flex; gap: 24px; align-items: flex-start; margin-top: 16px; flex-wrap: wrap; }
+    .cart-items { flex: 1 1 520px; min-width: 300px; }
+    .cart-checkout { width: 320px; background:#fafafa; padding:16px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+    .cart-items ul { list-style: none; padding: 0; margin: 0; }
+    .cart-items li { display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid #eee; align-items:center; }
+    .cart-items .qty-input { width:72px; }
+    .cart-total { font-weight:600; margin-top:12px; text-align:right; }
+    .cart-checkout label { display:block; margin-bottom:8px; }
+    .cart-checkout input[type="text"] { width:100%; padding:8px; margin-top:4px; box-sizing:border-box; }
+    .cart-checkout button { margin-top:8px; width:100%; padding:10px; }
+  </style>
+
+  <div class="cart-grid">
+    <div class="cart-items">
+      <div id="cart-container"></div>
+    </div>
+    <aside class="cart-checkout">
+      <h3>Thông tin thanh toán</h3>
+      <form id="checkout-form">
+        <label>Người nhận:
+          <input type="text" name="receiver" required>
+        </label>
+        <label>Địa chỉ:
+          <input type="text" name="address" required>
+        </label>
+        <label>Điện thoại:
+          <input type="text" name="phone" required>
+        </label>
+        <input type="hidden" name="total" id="total-input">
+        <button type="submit">Thanh toán</button>
+      </form>
+    </aside>
+  </div>
+
+  <script src="{% static 'js/cart.js' %}"></script>
+</div>
+{% endblock %}

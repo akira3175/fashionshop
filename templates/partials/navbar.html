@@ -40,6 +40,59 @@
                         <a href="#">Tài khoản</a>
                         <a href="{% url 'logout' %}">Đăng xuất</a>
                     </div>
+    <div class="header__wrap content row">
+        <a class="logo" href="{% url 'home' %}">
+            <img src="{% static 'img/logo.svg' %}" alt="Logo" class="logo_main">
+        </a>
+        <div class="icon__dash">☰</div>
+
+        <div class="header__main">
+            <nav class="nav">
+                <ul class="nav__container row">
+                    <li class="nav__item">
+                        <a href="{% url 'home' %}" class="nav__item__link nav__item__link--active" id="home_nav">Home</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="" class="nav__item__link">Contacts</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="{% url 'management' %}" class="nav__item__link" id="admin">Management</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="{% url 'cart:cart_page' %}" class="nav__item__link">Cart</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- sign in -->
+            <div class="signIn">
+                <div class="signIn__wrap">
+                    {% if user.is_authenticated %}
+                        <span class="user__name">Hello, {{ user.username }}</span>
+                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn">Log Out</button>
+                        </form>
+
+                    {% else %}
+                        <a href="{% url 'login' %}" class="logIn">Log In</a>
+                        <a href="" class="signUp__btn btn">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+
+
+            <div class="user unactive">
+                <div class="user__wrap row">
+                    <span class="user__name"></span>
+                    <img src="{% static 'img/user-Img.png' %}" alt="User" class="user__img">
+
+                    <a href="{% url 'cart:cart_page' %}">
+                        <div class="cart-quantity"><span class="cart-quantity-text"></span></div>
+                        <img src="{% static 'img/img__cart.png' %}" alt="Cart" class="cart__img">
+                    </a>            
+
+                    <img src="{% static 'img/signOut-icon.png' %}" alt="Sign out" class="sign__out">
                 </div>
             {% else %}
                 <a href="{% url 'login' %}" class="auth-btn">Đăng nhập</a>
