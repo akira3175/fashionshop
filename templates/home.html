@@ -118,18 +118,14 @@
             <div class="display-size">
                 <h4>SIZE</h4>
                 <select id="size">
-                    <option value="36" selected>36</option>
-                    <option value="37">37</option>
-                    <option value="38">38</option>
-                    <option value="39">39</option>
-                    <option value="40">40</option>
-                    <option value="41">41</option>
-                    <option value="42">42</option>
-                    <option value="43">43</option>
-                    <option value="44">44</option>
+                    {% for s in sizes %}
+                        <option value="{{ s.name }}">{{ s.name }}</option>
+                    {% empty %}
+                        <option disabled>No sizes available</option>
+                    {% endfor %}
                 </select>
             </div>
-            
+
             <h4>Quantity</h4>
             <div class="quantity">
                 <button class="decrease">-</button>

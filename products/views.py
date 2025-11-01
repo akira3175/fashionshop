@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Product, Category
+from .models import Product, Category, Size
 from django.db.models import Q
 from django.core.paginator import Paginator
 def product_list(request):
@@ -15,11 +15,13 @@ def product_list(request):
     paginator = Paginator(products, 12)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
+    sizes = Size.objects.all()
     return render(request, 'home.html', {
         'categories': categories,
         'products': products,
         'search_query': query,
         "page_obj": page_obj,
+        "sizes": sizes,
     })
 
 

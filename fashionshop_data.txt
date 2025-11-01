@@ -39,3 +39,14 @@ p3 = Product.objects.create(
 ProductSize.objects.create(product=p1, size=s_m)
 ProductSize.objects.create(product=p2, size=s_l)
 ProductSize.objects.create(product=p3, size=s_m)
+
+from products.models import Size
+
+# Add sizes 36–44
+for num in range(36, 45):
+    Size.objects.get_or_create(name=str(num))
+
+# Add sizes SML
+from products.models import Size
+for s in ["S", "M", "L", "XL", "XXL"]:
+    Size.objects.get_or_create(name=s)
