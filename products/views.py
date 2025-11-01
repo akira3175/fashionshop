@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Product, Category
+from .models import Product, Category, Size
 from django.db.models import Q
+from django.core.paginator import Paginator
 def product_list(request):
     categories = Category.objects.filter(hide=False)
     query = request.GET.get('search')
@@ -11,15 +12,18 @@ def product_list(request):
         ).distinct()
     else:
         products = Product.objects.filter(hide=False)
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    sizes = Size.objects.all()
     return render(request, 'home.html', {
         'categories': categories,
         'products': products,
         'search_query': query,
+        "page_obj": page_obj,
+        "sizes": sizes,
     })
 
-def product_detail(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    return render(request, 'products/product_detail.html', {'product': product})
 
 def product_by_category(request, category_id):
     categories = Category.objects.filter(hide=False)
