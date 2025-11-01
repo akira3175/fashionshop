@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core import serializers
 from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 from dashboard.admin import ProductForm
 from dashboard.check_admin import admin_required
@@ -174,3 +176,64 @@ def edit_product(request, product_id):
         'product_size_ids': product_size_ids,
     }
     return render(request, 'edit_product.html', context)
+
+def login_view(request):
+    """Function-based view để xử lý login"""
+    if request.user.is_authenticated:
+        return redirect('home')
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, f'Chào mừng {username}!')
+            return redirect('home')
+        else:
+            messages.error(request, 'Tên đăng nhập hoặc mật khẩu không đúng.')
+    
+    return render(request, 'login.html')
+
+
+def signup_view(request):
+    """Function-based view để xử lý đăng ký"""
+    if request.user.is_authenticated:
+        return redirect('home')
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        password_confirm = request.POST.get('password_confirm')
+        
+        # Kiểm tra mật khẩu trùng khớp
+        if password != password_confirm:
+            messages.error(request, 'Mật khẩu không trùng khớp.')
+            return render(request, 'signup.html')
+        
+        # Kiểm tra username đã tồn tại
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Tên đăng nhập đã tồn tại.')
+            return render(request, 'signup.html')
+        
+        # Kiểm tra email đã tồn tại
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Email đã được sử dụng.')
+            return render(request, 'signup.html')
+        
+        # Tạo user mới
+        user = User.objects.create_user(username=username, email=email, password=password)
+        login(request, user)
+        messages.success(request, 'Đăng ký thành công!')
+        return redirect('home')
+    
+    return render(request, 'signup.html')
+
+
+def logout_view(request):
+    """Function-based view để xử lý logout"""
+    logout(request)
+    messages.success(request, 'Đã đăng xuất thành công.')
+    return redirect('home')

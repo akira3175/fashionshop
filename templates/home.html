@@ -69,7 +69,7 @@
     <div class="list__product content">
         <ul class="list__product__container">
             {% for product in products %}
-                <li class="product__item">
+                <li class="product__item" id="{{ product.id }}">
                     <div class="product__item__wrap">
                         <img src="{{ product.image.url }}" alt="{{ product.name }}" width="200" class="product__img">
                         <h3 class="product__name">{{ product.name }}</h3>
@@ -142,8 +142,8 @@
         </div>
     </div>
 </div>
-{% load static %}
 <script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'js/cart.js' %}"></script>
 
 
     {% if messages %}

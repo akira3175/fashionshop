@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Thanh toán - Fashion Shop{% endblock %}
+
+{% block css %}
+<style>
+    .checkout-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    
+    .checkout-title {
+        font-size: 28px;
+        font-weight: 500;
+        margin-bottom: 30px;
+        color: #000;
+    }
+    
+    .checkout-content {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 30px;
+    }
+    
+    .checkout-form {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 30px;
+    }
+    
+    .form-section {
+        margin-bottom: 30px;
+    }
+    
+    .form-section:last-child {
+        margin-bottom: 0;
+    }
+    
+    .form-section-title {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        color: #000;
+    }
+    
+    .form-group {
+        margin-bottom: 16px;
+    }
+    
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 6px;
+        color: #333;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 14px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        font-family: inherit;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #000;
+    }
+    
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+    
+    .checkout-summary {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        height: fit-content;
+        position: sticky;
+        top: 100px;
+    }
+    
+    .summary-title {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        color: #000;
+    }
+    
+    .summary-item {
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .summary-item:last-of-type {
+        border-bottom: none;
+    }
+    
+    .summary-item-name {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+    
+    .summary-item-qty {
+        font-size: 12px;
+        color: #999;
+    }
+    
+    .summary-total {
+        border-top: 1px solid #e0e0e0;
+        padding-top: 12px;
+        margin-top: 12px;
+        display: flex;
+        justify-content: space-between;
+        font-weight: 500;
+        color: #000;
+        font-size: 16px;
+    }
+    
+    .summary-total span:last-child {
+        color: #d32f2f;
+    }
+    
+    .place-order-btn {
+        width: 100%;
+        padding: 12px;
+        background: #000;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+    
+    .place-order-btn:hover {
+        background: #333;
+    }
+    
+    .place-order-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+    
+    .back-to-cart {
+        text-align: center;
+        margin-top: 15px;
+    }
+    
+    .back-to-cart a {
+        color: #0066cc;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    
+    .back-to-cart a:hover {
+        text-decoration: underline;
+    }
+    
+    .error-message {
+        background: #ffebee;
+        color: #c62828;
+        padding: 12px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+        .checkout-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .checkout-summary {
+            position: static;
+        }
+        
+        .checkout-form {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <h1 class="checkout-title">Thanh toán</h1>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="error-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    
+    <div class="checkout-content">
+        <form method="POST" class="checkout-form" id="checkoutForm">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <h3 class="form-section-title">Thông tin giao hàng</h3>
+                
+                <div class="form-group">
+                    <label for="receiver_name">Tên người nhận *</label>
+                    <input type="text" id="receiver_name" name="receiver_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="receiver_phone">Số điện thoại *</label>
+                    <input type="tel" id="receiver_phone" name="receiver_phone" pattern="[0-9\-\+\s$$$$]+" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="receiver_address">Địa chỉ giao hàng *</label>
+                    <textarea id="receiver_address" name="receiver_address" required></textarea>
+                </div>
+            </div>
+            
+            <input type="hidden" id="cart_data" name="cart_data" value="">
+            
+            <button type="submit" class="place-order-btn" id="submitBtn">
+                Đặt hàng
+            </button>
+            
+            <div class="back-to-cart">
+                <a href="{% url 'cart' %}">Quay lại giỏ hàng</a>
+            </div>
+        </form>
+        
+        <div class="checkout-summary">
+            <h3 class="summary-title">Tóm tắt đơn hàng</h3>
+            <div id="summaryItems"></div>
+            <div class="summary-total">
+                <span>Tổng cộng:</span>
+                <span id="totalPrice">0đ</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+class CartManager {
+    constructor() {
+        this.storageKey = 'fashionshop_cart';
+    }
+    
+    getCart() {
+        const cart = localStorage.getItem(this.storageKey);
+        return cart ? JSON.parse(cart) : [];
+    }
+}
+
+const cart = new CartManager();
+
+function formatPrice(price) {
+    return price.toLocaleString('vi-VN') + 'đ';
+}
+
+function renderSummary() {
+    const cartItems = cart.getCart();
+    const container = document.getElementById('summaryItems');
+    
+    if (cartItems.length === 0) {
+        window.location.href = '{% url "cart" %}';
+        return;
+    }
+    
+    let html = '';
+    let total = 0;
+    
+    cartItems.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        
+        html += `
+            <div class="summary-item">
+                <div class="summary-item-name">
+                    <span>${item.product_name}</span>
+                    <span>${formatPrice(itemTotal)}</span>
+                </div>
+                <div class="summary-item-qty">Size ${item.size_name} × ${item.quantity}</div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+    document.getElementById('totalPrice').textContent = formatPrice(total);
+}
+
+document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const cartData = cart.getCart();
+    if (cartData.length === 0) {
+        alert('Giỏ hàng của bạn trống');
+        return;
+    }
+    
+    document.getElementById('cart_data').value = JSON.stringify(cartData);
+    this.submit();
+});
+
+document.addEventListener('DOMContentLoaded', renderSummary);
+</script>
+{% endblock %}
