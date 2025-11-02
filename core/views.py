@@ -16,3 +16,5 @@ def home(request):
         "sizes": sizes,
     })
 
+def contact(request):
+    return render(request, "contact.html")

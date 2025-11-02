@@ -262,8 +262,7 @@
     {% endif %}
 
     <script>
-        document.querySelector('#admin').classList.add('nav__item__link--active')
-        document.querySelector('#home_nav').classList.remove('nav__item__link--active')
+        setActiveNav('admin');
     </script>
 
     <script src="{% static 'js/admin/main.js' %}"></script>

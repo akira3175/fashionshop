@@ -14,13 +14,13 @@
                         <a href="{% url 'home' %}" class="nav__item__link nav__item__link--active" id="home_nav">Home</a>
                     </li>
                     <li class="nav__item">
-                        <a href="#" class="nav__item__link">Contacts</a>
+                        <a href="{% url 'contact' %}" class="nav__item__link" id="contact">Contacts</a>
                     </li>
                     <li class="nav__item">
                         <a href="{% url 'management' %}" class="nav__item__link" id="admin">Management</a>
                     </li>
                     <li class="nav__item">
-                        <a href="{% url 'orders:cart' %}" class="nav__item__link">Cart</a>
+                        <a href="{% url 'orders:cart' %}" class="nav__item__link" id="cart_nav">Cart</a>
                     </li>
                 </ul>
             </nav>
@@ -81,6 +81,16 @@ function updateCartCount() {
     } catch (e) {
         console.error('Error updating cart count:', e);
     }
+}
+
+function setActiveNav(activeId) {
+    // Xóa class active ở tất cả các tab
+    document.querySelectorAll('.nav__item__link').forEach(link => {
+        link.classList.remove('nav__item__link--active');
+    });
+    // Thêm class active vào tab được chọn
+    const activeLink = document.getElementById(activeId);
+    if (activeLink) activeLink.classList.add('nav__item__link--active');
 }
 
 document.addEventListener('DOMContentLoaded', function() {
