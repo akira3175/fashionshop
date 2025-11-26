@@ -17,7 +17,9 @@
                         <a href="{% url 'contact' %}" class="nav__item__link" id="contact">Contacts</a>
                     </li>
                     <li class="nav__item">
-                        <a href="{% url 'management' %}" class="nav__item__link" id="admin">Management</a>
+                        <a href="{% url 'management' %}" class="nav__item__link" id="admin" style="{% if not user.is_superuser %}
+                        	display: none;
+                        {% endif %} ">Management</a>
                     </li>
                     <li class="nav__item">
                         <a href="{% url 'orders:cart' %}" class="nav__item__link" id="cart_nav">Cart</a>
