@@ -58,7 +58,7 @@ class OrderItem(models.Model):
         verbose_name_plural = 'Chi tiết đơn hàng'
     
     def __str__(self):
-        return f"{self.product_size.product.name} x {self.quantity}"
+        return f"{self.product_size.product.name} {self.product_size.size.name} x {self.quantity}"
     
     def get_total(self):
         """Tính thành tiền"""

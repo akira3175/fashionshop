@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 from dashboard.admin import ProductForm
 from dashboard.check_admin import admin_required
+from orders.models import Order, OrderItem
 from products.models import Product, Category, Size, ProductSize
 
 
@@ -28,6 +29,10 @@ def management(request):
     else:
         products = Product.objects.all()
 
+    # Order default contains Order Items thanks to Related Manager
+    orders = Order.objects.all()
+    # print(orders[0].items.all())
+
     context = {
         # User data
         'users': users,
@@ -36,6 +41,9 @@ def management(request):
         # Product data
         'products': products,
         'search_product': search_product,
+
+        # Order data
+        'orders': orders
     }
     return render(request, 'management.html', context)
 
