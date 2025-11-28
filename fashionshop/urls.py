@@ -32,7 +32,7 @@ urlpatterns = [
 
     path('', include('core.urls')),
     path('orders/', include(('orders.urls', 'orders'), namespace='orders')),
-    path('dashboard/', include('dashboard.urls')), 
+    # path('dashboard/', include('dashboard.urls')),
 ]
 
 if settings.DEBUG:

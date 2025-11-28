@@ -11,14 +11,17 @@
             <nav class="nav">
                 <ul class="nav__container row">
                     <li class="nav__item">
-                        <a href="{% url 'home' %}" class="nav__item__link nav__item__link--active" id="home_nav">Home</a>
+                        <a href="{% url 'home' %}" class="nav__item__link nav__item__link--active"
+                           id="home_nav">Home</a>
                     </li>
                     <li class="nav__item">
                         <a href="{% url 'contact' %}" class="nav__item__link" id="contact">Contacts</a>
                     </li>
-                    <li class="nav__item">
-                        <a href="{% url 'management' %}" class="nav__item__link" id="admin">Management</a>
-                    </li>
+                    {% if user.is_superuser %}
+                        <li class="nav__item">
+                            <a href="{% url 'management' %}" class="nav__item__link" id="admin">Management</a>
+                        </li>
+                    {% endif %}
                     <li class="nav__item">
                         <a href="{% url 'orders:cart' %}" class="nav__item__link" id="cart_nav">Cart</a>
                     </li>
@@ -49,7 +52,7 @@
                     <a href="{% url 'orders:cart' %}">
                         <div class="cart-quantity"><span class="cart-quantity-text"></span></div>
                         <img src="{% static 'img/img__cart.png' %}" alt="Cart" class="cart__img">
-                    </a>            
+                    </a>
 
                     <img src="{% static 'img/signOut-icon.png' %}" alt="Sign out" class="sign__out">
                 </div>
@@ -59,56 +62,56 @@
 </header>
 
 <script>
-// Update cart count
-function updateCartCount() {
-    try {
-        const cart = localStorage.getItem('cart');
-        const items = cart ? JSON.parse(cart) : [];
-        const count = items.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
-        
-        const countElements = document.querySelectorAll('.cart-quantity-text');
-        countElements.forEach(element => {
-            element.textContent = count;
-            const cartQuantityDiv = element.closest('.cart-quantity');
-            if (cartQuantityDiv) {
-                if (count > 0) {
-                    cartQuantityDiv.style.display = 'flex';
-                } else {
-                    cartQuantityDiv.style.display = 'none';
+    // Update cart count
+    function updateCartCount() {
+        try {
+            const cart = localStorage.getItem('cart');
+            const items = cart ? JSON.parse(cart) : [];
+            const count = items.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
+
+            const countElements = document.querySelectorAll('.cart-quantity-text');
+            countElements.forEach(element => {
+                element.textContent = count;
+                const cartQuantityDiv = element.closest('.cart-quantity');
+                if (cartQuantityDiv) {
+                    if (count > 0) {
+                        cartQuantityDiv.style.display = 'flex';
+                    } else {
+                        cartQuantityDiv.style.display = 'none';
+                    }
                 }
-            }
-        });
-    } catch (e) {
-        console.error('Error updating cart count:', e);
+            });
+        } catch (e) {
+            console.error('Error updating cart count:', e);
+        }
     }
-}
 
-function setActiveNav(activeId) {
-    // Xóa class active ở tất cả các tab
-    document.querySelectorAll('.nav__item__link').forEach(link => {
-        link.classList.remove('nav__item__link--active');
-    });
-    // Thêm class active vào tab được chọn
-    const activeLink = document.getElementById(activeId);
-    if (activeLink) activeLink.classList.add('nav__item__link--active');
-}
+    function setActiveNav(activeId) {
+        // Xóa class active ở tất cả các tab
+        document.querySelectorAll('.nav__item__link').forEach(link => {
+            link.classList.remove('nav__item__link--active');
+        });
+        // Thêm class active vào tab được chọn
+        const activeLink = document.getElementById(activeId);
+        if (activeLink) activeLink.classList.add('nav__item__link--active');
+    }
 
-document.addEventListener('DOMContentLoaded', function() {
-    updateCartCount();
-    
-    // Update cart count when storage changes
-    window.addEventListener('storage', updateCartCount);
-    
-    // Check authentication for cart access
-    const cartLinks = document.querySelectorAll('a[href*="cart"]');
-    cartLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            const isAuthenticated = "{{ user.is_authenticated|lower }}" === 'true';
-            if (!isAuthenticated) {
-                e.preventDefault();
-                window.location.href = "{% url 'login' %}";
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+        updateCartCount();
+
+        // Update cart count when storage changes
+        window.addEventListener('storage', updateCartCount);
+
+        // Check authentication for cart access
+        const cartLinks = document.querySelectorAll('a[href*="cart"]');
+        cartLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                const isAuthenticated = "{{ user.is_authenticated|lower }}" === 'true';
+                if (!isAuthenticated) {
+                    e.preventDefault();
+                    window.location.href = "{% url 'login' %}";
+                }
+            });
         });
     });
-});
 </script>
