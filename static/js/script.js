@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const modal = document.getElementById("productInfo");
     const closeModal = document.getElementById("closeModal");
     const productName = document.getElementById("productname");
@@ -7,39 +7,63 @@ document.addEventListener("DOMContentLoaded", function() {
     const quantityInput = document.querySelector(".quantity-input");
     const decreaseBtn = document.querySelector(".decrease");
     const increaseBtn = document.querySelector(".increase");
+    const sizesData = JSON.parse(document.getElementById("sizesData").textContent);
 
     let currentProductId = null;
 
     // Open modal when product clicked
     document.querySelectorAll(".product__item").forEach(item => {
-        item.addEventListener("click", function() {
+        item.addEventListener("click", function () {
+
+            const id = parseInt(this.getAttribute("id"));
+            currentProductId = id;
+
+            /* Gán thông tin sản phẩm như bạn đang làm */
             const name = this.querySelector(".product__name").innerText;
             const priceText = this.querySelector(".product__price").innerText;
             const imgSrc = this.querySelector(".product__img").getAttribute("src");
-            const id = this.getAttribute("id");
 
-            currentProductId = id;
             productName.innerText = name;
             productPrice.innerText = priceText;
             productImage.src = imgSrc;
 
-            // Reset quantity
             quantityInput.value = 1;
 
             modal.classList.remove("unactive");
             modal.classList.add("active");
             modal.setAttribute("data-id", id);
+
+            // ==== HIỂN THỊ SIZE THEO PRODUCT_ID ====
+            const sizeSelect = document.getElementById("size");
+            sizeSelect.innerHTML = ""; // clear list
+
+            const product = sizesData.find(p => p.product_id === id);
+
+            if (product && product.sizes.length > 0) {
+                product.sizes.forEach(s => {
+                    const option = document.createElement("option");
+                    option.value = s.id;
+                    option.innerText = s.name;
+                    sizeSelect.appendChild(option);
+                });
+            } else {
+                const opt = document.createElement("option");
+                opt.disabled = true;
+                opt.innerText = "No sizes available";
+                sizeSelect.appendChild(opt);
+            }
         });
     });
 
+
     // Close modal
-    closeModal.addEventListener("click", function() {
+    closeModal.addEventListener("click", function () {
         modal.classList.add("unactive");
         modal.classList.remove("active");
     });
 
     // Close modal when clicking outside
-    modal.addEventListener("click", function(e) {
+    modal.addEventListener("click", function (e) {
         if (e.target === modal) {
             modal.classList.add("unactive");
             modal.classList.remove("active");
@@ -48,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Quantity controls
     if (decreaseBtn) {
-        decreaseBtn.addEventListener("click", function() {
+        decreaseBtn.addEventListener("click", function () {
             let value = parseInt(quantityInput.value) || 1;
             if (value > 1) {
                 quantityInput.value = value - 1;
@@ -57,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     if (increaseBtn) {
-        increaseBtn.addEventListener("click", function() {
+        increaseBtn.addEventListener("click", function () {
             let value = parseInt(quantityInput.value) || 1;
             quantityInput.value = value + 1;
         });
@@ -65,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Validate quantity input
     if (quantityInput) {
-        quantityInput.addEventListener("input", function() {
+        quantityInput.addEventListener("input", function () {
             let value = parseInt(this.value);
             if (isNaN(value) || value < 1) {
                 this.value = 1;
@@ -88,7 +112,7 @@ function addToCart() {
     // Ví dụ: "Giá: 299.000đ" -> 299000
     let priceStr = priceText.replace(/[^0-9]/g, ''); // Chỉ lấy số
     const price = parseFloat(priceStr);
-    
+
     const quantity = parseInt(quantityInput.value) || 1;
     const sizeOption = sizeSelect.options[sizeSelect.selectedIndex];
     const sizeName = sizeOption.text;
@@ -123,11 +147,11 @@ function addToCart() {
     // Thêm vào giỏ hàng
     if (cartManager.addItem(item)) {
         alert('Đã thêm vào giỏ hàng!');
-        
+
         // Đóng modal
         modal.classList.add("unactive");
         modal.classList.remove("active");
-        
+
         // Reset quantity
         quantityInput.value = 1;
     } else {
