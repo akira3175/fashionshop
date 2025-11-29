@@ -163,26 +163,33 @@ def edit_product(request, product_id):
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             # Lưu các field chính của product
-            updated_product = form.save()
+            form.save()
 
             # Lấy danh sách size và quantity được chọn từ form
             selected_size_ids = [int(s) for s in request.POST.getlist('sizes[]') if s]
-            quantities = request.POST.getlist('quantities[]')
+            quantities = [int(q) if q else 0 for q in request.POST.getlist('quantities[]')]
 
-            # Xóa tất cả ProductSize cũ
-            ProductSize.objects.filter(product=product).delete()
+            print(selected_size_ids)
+
+            # Xóa tất cả ProductSize không phụ thuộc orderitem
+            deletable_sizes = ProductSize.objects.filter(product=product).filter(orderitem__isnull=True)
+            deletable_sizes.delete()
             
             # Tạo ProductSize mới với quantity
-            if selected_size_ids:
-                objs = []
-                for i, size_id in enumerate(selected_size_ids):
-                    quantity = int(quantities[i]) if i < len(quantities) and quantities[i] else 0
-                    objs.append(ProductSize(
-                        product=product, 
+            for i, size_id in enumerate(selected_size_ids):
+                quantity = quantities[i]
+
+                # Nếu size đã tồn tại → update
+                ps = ProductSize.objects.filter(product=product, size_id=size_id).first()
+                if ps:
+                    ps.quantity = quantity
+                    ps.save()
+                else:
+                    ProductSize.objects.create(
+                        product=product,
                         size_id=size_id,
                         quantity=quantity
-                    ))
-                ProductSize.objects.bulk_create(objs)
+                    )
 
             messages.success(request, 'Cập nhật sản phẩm thành công!')
             return redirect('management')
